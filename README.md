@@ -119,5 +119,5 @@ Contributions are welcome. Please ensure your code follows the existing style an
 
 ## Author
 
-Memory Labyrinth - A narrative exploration game about memory and identity.
+Cherno
 
