@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "../../test"
+		},
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../cpp"
+		},
+		{
+			"path": "../../web"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "web"
+	}
+}
