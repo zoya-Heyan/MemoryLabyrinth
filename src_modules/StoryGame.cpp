@@ -1,4 +1,5 @@
 #include "StoryGame.hpp"
+#include "ParticleSystem.hpp"
 #include <iostream>
 #include <algorithm>
 #include <sstream>
@@ -10,7 +11,7 @@ StoryGame::StoryGame()
     : _window(sf::VideoMode(1200, 800), "Memory Labyrinth", sf::Style::Close)
     , _state(GameState::WakingUp)
     , _steps(0)
-    , _memoryPoints(10)  // Initial memory points
+    , _memoryPoints(10)
     , _familiarity(0)
     , _currentSceneIndex(0)
     , _rng(std::chrono::steady_clock::now().time_since_epoch().count())
@@ -22,59 +23,98 @@ StoryGame::StoryGame()
     , _bgColor(sf::Color(20, 20, 30))
 {
     _window.setFramerateLimit(60);
-    
-    // Load font - try to load font from assets directory
-    bool fontLoaded = false;
-    
-    // Try to load font from assets directory
-    const char* fontPaths[] = {
-        "../assets/Roboto-SemiBold.ttf"           // Roboto font
-    };
-    
-    for (const char* path : fontPaths) {
-        if (_font.loadFromFile(path)) {
-            fontLoaded = true;
-            std::cout << "Font loaded: " << path << std::endl;
-            break;
-        }
-    }
-    
-    if (!fontLoaded) {
-        std::cerr << "Warning: Failed to load font.\n";
-    }
-    
-    // Initialize text objects
+
+    // Load font
+    _font.loadFromFile("../assets/Roboto-SemiBold.ttf");
+
+    /* =========================
+       🎨 TEXT COLOR THEME
+       ========================= */
+
+    // Title – vivid memory red
     _titleText.setFont(_font);
     _titleText.setCharacterSize(48);
-    _titleText.setFillColor(sf::Color(200, 50, 50));
-    
+    _titleText.setFillColor(sf::Color(255, 80, 80));
+
+    // Main story text – cool bright white
     _mainText.setFont(_font);
-    _mainText.setCharacterSize(24);
-    _mainText.setFillColor(sf::Color(220, 220, 220));
-    _mainText.setLineSpacing(1.5f);
-    
+    _mainText.setCharacterSize(22);
+    _mainText.setFillColor(sf::Color(235, 240, 255));
+    _mainText.setLineSpacing(1.4f);
+
+        // ===== Base colors (DO NOT CHANGE IN RENDER) =====
+    _titleBaseColor       = sf::Color(255, 80, 80);     // Title red
+    _mainBaseColor        = sf::Color(235, 240, 255);   // Main text
+    _choiceBaseColor      = sf::Color(255, 225, 190);   // Choices
+    _statsBaseColor       = sf::Color(120, 220, 255);   // Stats
+    _consequenceBaseColor = sf::Color(255, 215, 120);   // Consequence
+
+    _titleText.setFillColor(_titleBaseColor);
+    _mainText.setFillColor(_mainBaseColor);
+    _statsText.setFillColor(_statsBaseColor);
+    _consequenceText.setFillColor(_consequenceBaseColor);
+
+    for (int i = 0; i < 9; ++i) {
+        _choiceTexts[i].setFillColor(_choiceBaseColor);
+    }
+
+    // Stats – cyber cyan
     _statsText.setFont(_font);
     _statsText.setCharacterSize(20);
-    _statsText.setFillColor(sf::Color(100, 200, 255));
-    
+    _statsText.setFillColor(sf::Color(120, 220, 255));
+
+    // Choices – warm readable highlight
     for (int i = 0; i < 9; ++i) {
         _choiceTexts[i].setFont(_font);
         _choiceTexts[i].setCharacterSize(22);
-        _choiceTexts[i].setFillColor(sf::Color(200, 180, 150));
+        _choiceTexts[i].setFillColor(sf::Color(255, 225, 190));
     }
-    
+
+    // Input – soft white
     _inputText.setFont(_font);
     _inputText.setCharacterSize(24);
-    _inputText.setFillColor(sf::Color(255, 255, 255));
-    
+    _inputText.setFillColor(sf::Color(245, 245, 255));
+
+    // Consequence / events – memory flash yellow
     _consequenceText.setFont(_font);
     _consequenceText.setCharacterSize(22);
-    _consequenceText.setFillColor(sf::Color(255, 200, 100));
-    
-    // Initialize background
+    _consequenceText.setFillColor(sf::Color(255, 215, 120));
+
+    /* ========================= */
+
     _background.setSize(sf::Vector2f(1200, 800));
     _background.setFillColor(_bgColor);
-    
+
+    _titleBox.setSize(sf::Vector2f(1100, 80));
+    _titleBox.setFillColor(sf::Color(30, 30, 45, 200));
+    _titleBox.setOutlineColor(sf::Color(120, 180, 255, 150));
+    _titleBox.setOutlineThickness(2.0f);
+    _titleBox.setPosition(50.0f, 40.0f);
+
+    _statsBox.setSize(sf::Vector2f(1100, 60));
+    _statsBox.setFillColor(sf::Color(25, 25, 40, 180));
+    _statsBox.setOutlineColor(sf::Color(100, 160, 220, 120));
+    _statsBox.setOutlineThickness(1.5f);
+    _statsBox.setPosition(50.0f, 140.0f);
+
+    _textBox.setSize(sf::Vector2f(1100, 400));
+    _textBox.setFillColor(sf::Color(15, 15, 25, 200));
+    _textBox.setOutlineColor(sf::Color(80, 140, 200, 100));
+    _textBox.setOutlineThickness(1.0f);
+
+    for (int i = 0; i < 9; ++i) {
+        _choiceBoxes[i].setSize(sf::Vector2f(1050, 35));
+        _choiceBoxes[i].setFillColor(sf::Color(25, 25, 40, 150));
+        _choiceBoxes[i].setOutlineColor(sf::Color(160, 200, 255, 100));
+        _choiceBoxes[i].setOutlineThickness(1.0f);
+    }
+
+    _ambientParticleInterval = 2.0f;
+    _ambientParticleTimer.restart();
+    _gameOverParticlesCreated = false;
+
+    _useTextEffects = false;
+
     initializeGame();
 }
 
@@ -138,6 +178,26 @@ void StoryGame::run() {
         processInput();
         update();
         
+        // Update particle system
+        _particleSystem.update(deltaTime);
+        
+        // Update text effects
+        if (_useTextEffects) {
+            _mainTextEffect.update(deltaTime);
+            _titleTextEffect.update(deltaTime);
+            _consequenceTextEffect.update(deltaTime);
+        }
+        
+        // Update title glow effect
+        _titleGlowIntensity = (std::sin(_glowTimer.getElapsedTime().asSeconds() * 2.0f) + 1.0f) * 0.5f;
+        
+        // Create ambient floating particles periodically
+        if (_ambientParticleTimer.getElapsedTime().asSeconds() >= _ambientParticleInterval) {
+            _particleSystem.createFloatingParticles(3);
+            _ambientParticleTimer.restart();
+            _ambientParticleInterval = 1.5f + (std::rand() % 100) / 100.0f;
+        }
+        
         if (_showConsequence) {
             _consequenceTimer -= deltaTime;
             if (_consequenceTimer <= 0.0f) {
@@ -164,15 +224,20 @@ void StoryGame::processInput() {
             }
             
             if (_state == GameState::WakingUp) {
-                if (event.key.code == sf::Keyboard::Enter && !_currentInput.empty()) {
-                    _playerName = _currentInput;
-                    _currentInput.clear();
-                } else if (event.key.code == sf::Keyboard::C || 
-                          (event.key.code == sf::Keyboard::Enter && _playerName.empty() == false)) {
-                    if (!_playerName.empty()) {
+                if (event.key.code == sf::Keyboard::Enter) {
+                    if (!_currentInput.empty() && _playerName.empty()) {
+                        // First Enter: confirm name
+                        _playerName = _currentInput;
+                        _currentInput.clear();
+                    } else if (!_playerName.empty()) {
+                        // Second Enter: start game
                         _state = GameState::Exploring;
                         _scenes.push_back(generateRandomScene());
                     }
+                } else if (event.key.code == sf::Keyboard::C && !_playerName.empty()) {
+                    // C key: start game if name is set
+                    _state = GameState::Exploring;
+                    _scenes.push_back(generateRandomScene());
                 }
             } else if (_state == GameState::Exploring) {
                 if (event.key.code >= sf::Keyboard::Num1 && 
@@ -181,6 +246,14 @@ void StoryGame::processInput() {
                     if (!_scenes.empty() && choice > 0 && 
                         choice <= static_cast<int>(_scenes.back().choices.size())) {
                         Choice& selectedChoice = _scenes.back().choices[choice - 1];
+                        
+                        // Create particle effect for choice selection
+                        float choiceY = 280.0f + (choice - 1) * 35.0f;
+                        _particleSystem.createChoiceEffect(
+                            sf::Vector2f(100.0f, choiceY), 
+                            sf::Color(100, 200, 255), 
+                            15
+                        );
                         
                         // Display consequence
                         _consequenceText.setString(selectedChoice.consequence);
@@ -237,6 +310,16 @@ void StoryGame::update() {
     // Check game over condition
     if (_memoryPoints <= 0 && _state == GameState::Exploring) {
         _state = GameState::GameOver;
+        // Create dramatic particle effect when game ends (one time)
+        if (!_gameOverParticlesCreated) {
+            for (int i = 0; i < 10; ++i) {
+                _particleSystem.createMemoryLossEffect(
+                    sf::Vector2f(200.0f + i * 80.0f, 300.0f), 
+                    25
+                );
+            }
+            _gameOverParticlesCreated = true;
+        }
     }
     
     // If familiarity reaches a certain level, trigger special story
@@ -246,109 +329,176 @@ void StoryGame::update() {
 }
 
 void StoryGame::render() {
-    _window.clear(_bgColor);
-    
-    // Draw background
+    // ===== Background =====
+    float bgPulse = (std::sin(_glowTimer.getElapsedTime().asSeconds() * 0.5f) + 1.0f) * 0.5f;
+    sf::Color bgColor = _bgColor;
+    bgColor.r = static_cast<sf::Uint8>(20 + bgPulse * 5);
+    bgColor.g = static_cast<sf::Uint8>(20 + bgPulse * 5);
+    bgColor.b = static_cast<sf::Uint8>(30 + bgPulse * 5);
+
+    _window.clear(bgColor);
+    _background.setFillColor(bgColor);
     _window.draw(_background);
-    
+    _particleSystem.draw(_window);
+
     float yPos = 50.0f;
-    
-    // Display title
-    _titleText.setString(
-                        "                  Memory Labyrinth\n");
-    _titleText.setPosition(50.0f, yPos);
-    _window.draw(_titleText);
-    yPos += 100.0f;
-    
-    // Display statistics
+
+    // ===== Title Box =====
+    sf::Color titleBoxColor = _titleBox.getFillColor();
+    titleBoxColor.a = static_cast<sf::Uint8>(200 + _titleGlowIntensity * 55);
+    _titleBox.setFillColor(titleBoxColor);
+
+    sf::Color titleOutlineColor = _titleBox.getOutlineColor();
+    titleOutlineColor.a = static_cast<sf::Uint8>(150 + _titleGlowIntensity * 105);
+    _titleBox.setOutlineColor(titleOutlineColor);
+
+    _window.draw(_titleBox);
+
+    // ===== Title Text (STABLE COLOR) =====
+    _titleText.setString("                  Memory Labyrinth");
+    _titleText.setPosition(70.0f, yPos + 15.0f);
+
+    {
+        sf::Color base = _titleBaseColor;
+        float glow = 0.7f + _titleGlowIntensity * 0.3f;
+        sf::Color drawColor(
+            static_cast<sf::Uint8>(base.r * glow),
+            static_cast<sf::Uint8>(base.g * glow),
+            static_cast<sf::Uint8>(base.b * glow),
+            base.a
+        );
+        _titleText.setFillColor(drawColor);
+        _window.draw(_titleText);
+    }
+
+    yPos += 90.0f;
+
+    // ===== Stats =====
     displayStats();
-    _statsText.setPosition(50.0f, yPos);
+    float statsHeight = std::max(50.0f, std::min(100.0f, _statsText.getGlobalBounds().height + 20.0f));
+    _statsBox.setSize({1100, statsHeight});
+    _window.draw(_statsBox);
+
+    _statsText.setFillColor(_statsBaseColor);
+    _statsText.setPosition(70.0f, yPos + 10.0f);
     _window.draw(_statsText);
-    yPos += 60.0f;
-    
+    yPos += statsHeight + 5.0f;
+
+    // ===== Waking Up =====
     if (_state == GameState::WakingUp) {
-        std::string wakeText = "You slowly open your eyes...\n\n";
-        wakeText += "The cold ground presses against your cheek. You slowly sit up and look around.\n\n";
-        wakeText += "This is an unfamiliar street, but the air is filled with an indescribable sense of familiarity.\n\n";
-        wakeText += "You look at the wall beside you, written in red paint:\n";
-        wakeText += "\"Please enter your name:\"\n\n";
-        
-        if (!_playerName.empty()) {
-            wakeText += "Your name appears on the wall: " + _playerName + "\n\n";
-            wakeText += "You feel uneasy. Every time you try to think, something disappears from your mind.\n\n";
-            wakeText += "You must move forward, but each step will make you lose more memories...\n";
-            wakeText += "Yet this street becomes increasingly familiar.\n\n";
-            wakeText += "Press C or Enter to begin your journey...\n";
-        } else {
-            wakeText += "> " + _currentInput + "_";
-        }
-        
+        std::string wakeText =
+            "You slowly open your eyes...\n\n"
+            "The cold ground presses against your cheek.\n\n"
+            "Please enter your name:\n\n";
+
+        wakeText += _playerName.empty()
+            ? "> " + _currentInput + "_"
+            : "Your name appears on the wall: " + _playerName + "\n\nPress ENTER to begin...\n";
+
         _mainText.setString(wakeText);
-        _mainText.setPosition(50.0f, yPos);
-        _window.draw(_mainText);
-    } else if (_state == GameState::Exploring) {
-        displayScene();
-        float sceneY = yPos;
-        
-        if (!_scenes.empty()) {
-            Scene& scene = _scenes.back();
-            
-            std::string sceneText = scene.description + "\n\n";
-            
-            if (scene.hasMemory && !scene.memory.description.empty()) {
-                sceneText += "[Memory Flash] " + scene.memory.description + "\n\n";
-                if (!scene.memoryGained) {
-                    gainMemory(scene.memory);
-                    scene.memoryGained = true;
-                }
-            }
-            
-            _mainText.setString(sceneText);
-            _mainText.setPosition(50.0f, sceneY);
-            _window.draw(_mainText);
-            sceneY += _mainText.getGlobalBounds().height + 30.0f;
-            
-            // Display choices
-            std::string choicesText = "Your choices:\n\n";
-            _mainText.setString(choicesText);
-            _mainText.setPosition(50.0f, sceneY);
-            _window.draw(_mainText);
-            sceneY += 40.0f;
-            
-            for (size_t i = 0; i < scene.choices.size(); ++i) {
-                std::string choiceStr = "  [" + std::to_string(i + 1) + "] " + scene.choices[i].text;
-                if (scene.choices[i].memoryCost > 0) {
-                    choiceStr += " (-" + std::to_string(scene.choices[i].memoryCost) + " memory)";
-                }
-                _choiceTexts[i].setString(choiceStr);
-                _choiceTexts[i].setPosition(70.0f, sceneY);
-                _window.draw(_choiceTexts[i]);
-                sceneY += 35.0f;
-            }
-        }
-        
-        // Display consequence
-        if (_showConsequence) {
-            _consequenceText.setPosition(50.0f, sceneY + 20.0f);
-            _window.draw(_consequenceText);
-        }
-    } else if (_state == GameState::GameOver) {
-        std::string gameOverText = "═══════════════════════════════════════════════════════\n";
-        gameOverText += "                      Game Over\n";
-        gameOverText += "═══════════════════════════════════════════════════════\n\n";
-        gameOverText += "All your memories have faded away.\n\n";
-        gameOverText += "You stand in the center of the street, not knowing who you are, not knowing where to go.\n\n";
-        gameOverText += "But this street... you remember it.\n";
-        gameOverText += "You've been here before...\n\n";
-        gameOverText += "Steps: " + std::to_string(_steps) + "\n";
-        gameOverText += "Street Familiarity: " + std::to_string(_familiarity) + "%\n\n";
-        gameOverText += "Press Enter or ESC to exit...\n";
-        
-        _mainText.setString(gameOverText);
-        _mainText.setPosition(50.0f, yPos);
+        float textHeight = _mainText.getLocalBounds().height + 50.0f;
+        float textBoxHeight = std::max(350.0f, textHeight);
+
+        sf::Color boxColor = _textBox.getFillColor();
+        boxColor.a = 220;
+        _textBox.setFillColor(boxColor);
+        _textBox.setSize({1100, textBoxHeight});
+        _textBox.setPosition(50.0f, yPos);
+        _window.draw(_textBox);
+
+        _mainText.setFillColor(_mainBaseColor);
+        _mainText.setPosition(70.0f, yPos + 20.0f);
         _window.draw(_mainText);
     }
-    
+
+    // ===== Exploring =====
+    else if (_state == GameState::Exploring && !_scenes.empty()) {
+        Scene& scene = _scenes.back();
+        float sceneY = yPos;
+
+        std::string sceneText = scene.description + "\n\n";
+        _mainText.setString(sceneText);
+
+        float sceneTextHeight = _mainText.getGlobalBounds().height;
+        _textBox.setSize({1100, sceneTextHeight + 40.0f});
+        _textBox.setPosition(50.0f, sceneY);
+        _window.draw(_textBox);
+
+        _mainText.setFillColor(_mainBaseColor);
+        _mainText.setPosition(70.0f, sceneY + 20.0f);
+        _window.draw(_mainText);
+
+        sceneY += sceneTextHeight + 60.0f;
+
+        // ===== Choices =====
+        for (size_t i = 0; i < scene.choices.size(); ++i) {
+            _choiceTexts[i].setString(
+                "[" + std::to_string(i + 1) + "] " + scene.choices[i].text
+            );
+
+            float pulse = (std::sin(_glowTimer.getElapsedTime().asSeconds() * 2.0f + i) + 1.0f) * 0.5f;
+            sf::Color base = _choiceBaseColor;
+            float glow = 0.9f + pulse * 0.1f;
+
+            sf::Color drawColor(
+                static_cast<sf::Uint8>(base.r * glow),
+                static_cast<sf::Uint8>(base.g * glow),
+                static_cast<sf::Uint8>(base.b * glow),
+                base.a
+            );
+
+            _choiceTexts[i].setFillColor(drawColor);
+            _choiceTexts[i].setPosition(85.0f, sceneY);
+            _window.draw(_choiceTexts[i]);
+
+            sceneY += 38.0f;
+        }
+
+        // ===== Consequence =====
+        if (_showConsequence) {
+            sf::Color base = _consequenceBaseColor;
+            float pulse = (std::sin(_glowTimer.getElapsedTime().asSeconds() * 4.0f) + 1.0f) * 0.5f;
+            float glow = 0.8f + pulse * 0.2f;
+
+            sf::Color drawColor(
+                static_cast<sf::Uint8>(base.r * glow),
+                static_cast<sf::Uint8>(base.g * glow),
+                static_cast<sf::Uint8>(base.b * glow),
+                static_cast<sf::Uint8>(std::min(255.0f, (_consequenceTimer / 3.0f) * 255.0f))
+            );
+
+            _consequenceText.setFillColor(drawColor);
+            _consequenceText.setPosition(70.0f, sceneY + 10.0f);
+            _window.draw(_consequenceText);
+        }
+    }
+
+    else if (_state == GameState::GameOver) {
+    _textBox.setSize(sf::Vector2f(1100, 500));
+    _textBox.setPosition(50.0f, yPos);
+    _textBox.setFillColor(sf::Color(40, 20, 20, 220));
+    _textBox.setOutlineColor(sf::Color(200, 50, 50, 200));
+    _textBox.setOutlineThickness(3.0f);
+    _window.draw(_textBox);
+
+    std::string gameOverText =
+        "                      Game Over\n\n"
+        "All your memories have faded away.\n\n"
+        "You stand in the center of the street,\n"
+        "not knowing who you are,\n"
+        "not knowing where to go.\n\n"
+        "But this street...\n"
+        "You remember it.\n\n"
+        "Steps: " + std::to_string(_steps) + "\n"
+        "Street Familiarity: " + std::to_string(_familiarity) + "%\n\n"
+        "Press ENTER or ESC to exit...\n";
+
+    _mainText.setString(gameOverText);
+    _mainText.setFillColor(sf::Color(220, 150, 150));
+    _mainText.setPosition(70.0f, yPos + 20.0f);
+    _window.draw(_mainText);
+}
+
     _window.display();
 }
 
@@ -359,31 +509,36 @@ void StoryGame::displayScene() {
 void StoryGame::displayStats() {
     std::string stats = "Steps: " + std::to_string(_steps) + "  |  ";
     stats += "Memory: " + std::to_string(_memoryPoints) + "/10  |  ";
-    stats += "Familiarity: " + std::to_string(_familiarity) + "%\n\n";
+    stats += "Familiarity: " + std::to_string(_familiarity) + "%";
     
     if (!_memories.empty()) {
-        stats += "Remaining Memories: ";
-        for (size_t i = 0; i < _memories.size() && i < 5; ++i) {
+        stats += "\nRemaining Memories: ";
+        for (size_t i = 0; i < _memories.size() && i < 4; ++i) {
             stats += _memories[i].description;
-            if (i < _memories.size() - 1 && i < 4) {
+            if (i < _memories.size() - 1 && i < 3) {
                 stats += ", ";
             }
         }
-        if (_memories.size() > 5) {
-            stats += "...";
+        if (_memories.size() > 4) {
+            stats += " ... (" + std::to_string(_memories.size() - 4) + " more)";
         }
     }
     
     _statsText.setString(stats);
+    _statsText.setLineSpacing(1.2f);
 }
 
 void StoryGame::loseMemory(int amount) {
     _memoryPoints = std::max(0, _memoryPoints - amount);
     
+    // Create particle effect for memory loss
+    _particleSystem.createMemoryLossEffect(sf::Vector2f(600.0f, 200.0f), 25);
+    
     if (_memoryPoints <= 0 && !_memories.empty()) {
         // Lose the last memory
         _lostMemories.push_back(_memories.back());
         _memories.pop_back();
+        _particleSystem.createMemoryLossEffect(sf::Vector2f(600.0f, 300.0f), 40);
     } else if (!_memories.empty()) {
         std::uniform_int_distribution<int> loseDist(0, 2);
         if (loseDist(_rng) == 0) {
@@ -409,6 +564,8 @@ void StoryGame::gainMemory(const Memory& memory) {
     if (!exists) {
         _memories.push_back(memory);
         _memoryPoints = std::min(10, _memoryPoints + 1);
+        // Create sparkle effect for gaining memory
+        _particleSystem.createSparkle(sf::Vector2f(600.0f, 250.0f), sf::Color(255, 200, 100));
     }
 }
 

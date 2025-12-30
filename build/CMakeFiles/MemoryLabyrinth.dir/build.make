@@ -100,22 +100,54 @@ CMakeFiles/MemoryLabyrinth.dir/src_modules/StoryGame.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/MemoryLabyrinth.dir/src_modules/StoryGame.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/construction/src_modules/StoryGame.cpp -o CMakeFiles/MemoryLabyrinth.dir/src_modules/StoryGame.cpp.s
 
+CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.o: CMakeFiles/MemoryLabyrinth.dir/flags.make
+CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.o: /Users/construction/src_modules/ParticleSystem.cpp
+CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.o: CMakeFiles/MemoryLabyrinth.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/construction/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.o -MF CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.o.d -o CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.o -c /Users/construction/src_modules/ParticleSystem.cpp
+
+CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/construction/src_modules/ParticleSystem.cpp > CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.i
+
+CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/construction/src_modules/ParticleSystem.cpp -o CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.s
+
+CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.o: CMakeFiles/MemoryLabyrinth.dir/flags.make
+CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.o: /Users/construction/src_modules/TextEffect.cpp
+CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.o: CMakeFiles/MemoryLabyrinth.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/construction/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.o -MF CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.o.d -o CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.o -c /Users/construction/src_modules/TextEffect.cpp
+
+CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/construction/src_modules/TextEffect.cpp > CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.i
+
+CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/construction/src_modules/TextEffect.cpp -o CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.s
+
 # Object files for target MemoryLabyrinth
 MemoryLabyrinth_OBJECTS = \
 "CMakeFiles/MemoryLabyrinth.dir/src/main.cpp.o" \
-"CMakeFiles/MemoryLabyrinth.dir/src_modules/StoryGame.cpp.o"
+"CMakeFiles/MemoryLabyrinth.dir/src_modules/StoryGame.cpp.o" \
+"CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.o" \
+"CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.o"
 
 # External object files for target MemoryLabyrinth
 MemoryLabyrinth_EXTERNAL_OBJECTS =
 
 MemoryLabyrinth: CMakeFiles/MemoryLabyrinth.dir/src/main.cpp.o
 MemoryLabyrinth: CMakeFiles/MemoryLabyrinth.dir/src_modules/StoryGame.cpp.o
+MemoryLabyrinth: CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.o
+MemoryLabyrinth: CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.o
 MemoryLabyrinth: CMakeFiles/MemoryLabyrinth.dir/build.make
 MemoryLabyrinth: /opt/homebrew/opt/sfml@2/lib/libsfml-graphics.2.6.2.dylib
 MemoryLabyrinth: /opt/homebrew/opt/sfml@2/lib/libsfml-window.2.6.2.dylib
 MemoryLabyrinth: /opt/homebrew/opt/sfml@2/lib/libsfml-system.2.6.2.dylib
 MemoryLabyrinth: CMakeFiles/MemoryLabyrinth.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/construction/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable MemoryLabyrinth"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/construction/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable MemoryLabyrinth"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/MemoryLabyrinth.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

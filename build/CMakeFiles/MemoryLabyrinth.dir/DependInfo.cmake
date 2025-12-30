@@ -9,7 +9,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/Users/construction/src/main.cpp" "CMakeFiles/MemoryLabyrinth.dir/src/main.cpp.o" "gcc" "CMakeFiles/MemoryLabyrinth.dir/src/main.cpp.o.d"
+  "/Users/construction/src_modules/ParticleSystem.cpp" "CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.o" "gcc" "CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.o.d"
   "/Users/construction/src_modules/StoryGame.cpp" "CMakeFiles/MemoryLabyrinth.dir/src_modules/StoryGame.cpp.o" "gcc" "CMakeFiles/MemoryLabyrinth.dir/src_modules/StoryGame.cpp.o.d"
+  "/Users/construction/src_modules/TextEffect.cpp" "CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.o" "gcc" "CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

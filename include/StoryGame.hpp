@@ -5,6 +5,8 @@
 #include <random>
 #include <memory>
 #include <SFML/Graphics.hpp>
+#include "ParticleSystem.hpp"
+#include "TextEffect.hpp"
 
 // 记忆片段
 struct Memory {
@@ -100,5 +102,39 @@ private:
     // 背景
     sf::RectangleShape _background;
     sf::Color _bgColor;
+    
+    // Visual effects
+    ParticleSystem _particleSystem;
+    sf::Clock _ambientParticleTimer;
+    float _ambientParticleInterval;
+    bool _gameOverParticlesCreated;
+    
+    // UI elements
+    sf::RectangleShape _titleBox;
+    sf::RectangleShape _statsBox;
+    sf::RectangleShape _textBox;
+    sf::RectangleShape _choiceBoxes[9];
+    
+    // Pixel art effect
+    sf::RenderTexture _pixelRenderTexture;
+    sf::Sprite _pixelSprite;
+    bool _usePixelEffect;
+    
+    // Text effects
+    TextEffect _mainTextEffect;
+    TextEffect _titleTextEffect;
+    TextEffect _consequenceTextEffect;
+    bool _useTextEffects = false;
+    
+    // Additional visual effects
+    sf::Clock _glowTimer;
+    float _titleGlowIntensity;
+
+    // ===== Stable base colors =====
+    sf::Color _titleBaseColor;
+    sf::Color _mainBaseColor;
+    sf::Color _choiceBaseColor;
+    sf::Color _statsBaseColor;
+    sf::Color _consequenceBaseColor;
 };
 

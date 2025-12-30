@@ -85,12 +85,12 @@ clean: CMakeFiles/MemoryLabyrinth.dir/clean
 CMakeFiles/MemoryLabyrinth.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MemoryLabyrinth.dir/build.make CMakeFiles/MemoryLabyrinth.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MemoryLabyrinth.dir/build.make CMakeFiles/MemoryLabyrinth.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/construction/build/CMakeFiles --progress-num=1,2,3 "Built target MemoryLabyrinth"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/construction/build/CMakeFiles --progress-num=1,2,3,4,5 "Built target MemoryLabyrinth"
 .PHONY : CMakeFiles/MemoryLabyrinth.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/MemoryLabyrinth.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/construction/build/CMakeFiles 3
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/construction/build/CMakeFiles 5
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/MemoryLabyrinth.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/construction/build/CMakeFiles 0
 .PHONY : CMakeFiles/MemoryLabyrinth.dir/rule
@@ -102,7 +102,7 @@ MemoryLabyrinth: CMakeFiles/MemoryLabyrinth.dir/rule
 # codegen rule for target.
 CMakeFiles/MemoryLabyrinth.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MemoryLabyrinth.dir/build.make CMakeFiles/MemoryLabyrinth.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/construction/build/CMakeFiles --progress-num=1,2,3 "Finished codegen for target MemoryLabyrinth"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/construction/build/CMakeFiles --progress-num=1,2,3,4,5 "Finished codegen for target MemoryLabyrinth"
 .PHONY : CMakeFiles/MemoryLabyrinth.dir/codegen
 
 # clean rule for target.

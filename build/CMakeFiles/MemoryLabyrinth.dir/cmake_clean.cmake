@@ -1,8 +1,12 @@
 file(REMOVE_RECURSE
   "CMakeFiles/MemoryLabyrinth.dir/src/main.cpp.o"
   "CMakeFiles/MemoryLabyrinth.dir/src/main.cpp.o.d"
+  "CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.o"
+  "CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.o.d"
   "CMakeFiles/MemoryLabyrinth.dir/src_modules/StoryGame.cpp.o"
   "CMakeFiles/MemoryLabyrinth.dir/src_modules/StoryGame.cpp.o.d"
+  "CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.o"
+  "CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.o.d"
   "MemoryLabyrinth"
   "MemoryLabyrinth.pdb"
 )

@@ -153,6 +153,30 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MemoryLabyrinth.dir/build.make CMakeFiles/MemoryLabyrinth.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src_modules/ParticleSystem.o: src_modules/ParticleSystem.cpp.o
+.PHONY : src_modules/ParticleSystem.o
+
+# target to build an object file
+src_modules/ParticleSystem.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MemoryLabyrinth.dir/build.make CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.o
+.PHONY : src_modules/ParticleSystem.cpp.o
+
+src_modules/ParticleSystem.i: src_modules/ParticleSystem.cpp.i
+.PHONY : src_modules/ParticleSystem.i
+
+# target to preprocess a source file
+src_modules/ParticleSystem.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MemoryLabyrinth.dir/build.make CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.i
+.PHONY : src_modules/ParticleSystem.cpp.i
+
+src_modules/ParticleSystem.s: src_modules/ParticleSystem.cpp.s
+.PHONY : src_modules/ParticleSystem.s
+
+# target to generate assembly for a file
+src_modules/ParticleSystem.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MemoryLabyrinth.dir/build.make CMakeFiles/MemoryLabyrinth.dir/src_modules/ParticleSystem.cpp.s
+.PHONY : src_modules/ParticleSystem.cpp.s
+
 src_modules/StoryGame.o: src_modules/StoryGame.cpp.o
 .PHONY : src_modules/StoryGame.o
 
@@ -177,6 +201,30 @@ src_modules/StoryGame.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MemoryLabyrinth.dir/build.make CMakeFiles/MemoryLabyrinth.dir/src_modules/StoryGame.cpp.s
 .PHONY : src_modules/StoryGame.cpp.s
 
+src_modules/TextEffect.o: src_modules/TextEffect.cpp.o
+.PHONY : src_modules/TextEffect.o
+
+# target to build an object file
+src_modules/TextEffect.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MemoryLabyrinth.dir/build.make CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.o
+.PHONY : src_modules/TextEffect.cpp.o
+
+src_modules/TextEffect.i: src_modules/TextEffect.cpp.i
+.PHONY : src_modules/TextEffect.i
+
+# target to preprocess a source file
+src_modules/TextEffect.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MemoryLabyrinth.dir/build.make CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.i
+.PHONY : src_modules/TextEffect.cpp.i
+
+src_modules/TextEffect.s: src_modules/TextEffect.cpp.s
+.PHONY : src_modules/TextEffect.s
+
+# target to generate assembly for a file
+src_modules/TextEffect.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MemoryLabyrinth.dir/build.make CMakeFiles/MemoryLabyrinth.dir/src_modules/TextEffect.cpp.s
+.PHONY : src_modules/TextEffect.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -189,9 +237,15 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src_modules/ParticleSystem.o"
+	@echo "... src_modules/ParticleSystem.i"
+	@echo "... src_modules/ParticleSystem.s"
 	@echo "... src_modules/StoryGame.o"
 	@echo "... src_modules/StoryGame.i"
 	@echo "... src_modules/StoryGame.s"
+	@echo "... src_modules/TextEffect.o"
+	@echo "... src_modules/TextEffect.i"
+	@echo "... src_modules/TextEffect.s"
 .PHONY : help
 
 

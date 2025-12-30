@@ -921,4 +921,6 @@ CMakeFiles/MemoryLabyrinth.dir/src/main.cpp.o: \
   /opt/homebrew/opt/sfml@2/include/SFML/Graphics/Glsl.inl \
   /opt/homebrew/opt/sfml@2/include/SFML/Graphics/Sprite.hpp \
   /opt/homebrew/opt/sfml@2/include/SFML/Graphics/Text.hpp \
-  /opt/homebrew/opt/sfml@2/include/SFML/Graphics/VertexBuffer.hpp
+  /opt/homebrew/opt/sfml@2/include/SFML/Graphics/VertexBuffer.hpp \
+  /Users/construction/include/ParticleSystem.hpp \
+  /Users/construction/include/TextEffect.hpp

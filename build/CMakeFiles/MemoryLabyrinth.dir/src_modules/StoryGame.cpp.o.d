@@ -922,6 +922,8 @@ CMakeFiles/MemoryLabyrinth.dir/src_modules/StoryGame.cpp.o: \
   /opt/homebrew/opt/sfml@2/include/SFML/Graphics/Sprite.hpp \
   /opt/homebrew/opt/sfml@2/include/SFML/Graphics/Text.hpp \
   /opt/homebrew/opt/sfml@2/include/SFML/Graphics/VertexBuffer.hpp \
+  /Users/construction/include/ParticleSystem.hpp \
+  /Users/construction/include/TextEffect.hpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/istream \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/sstream \

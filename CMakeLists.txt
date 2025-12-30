@@ -30,7 +30,9 @@ endif()
 # 添加可执行文件
 add_executable(MemoryLabyrinth
     src/main.cpp
-    src_modules/StoryGame.cpp)
+    src_modules/StoryGame.cpp
+    src_modules/ParticleSystem.cpp
+    src_modules/TextEffect.cpp)
 
 # 包含目录
 target_include_directories(MemoryLabyrinth PRIVATE include)
