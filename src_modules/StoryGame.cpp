@@ -344,13 +344,14 @@ void StoryGame::render() {
     float yPos = 50.0f;
 
     // ===== Title Box =====
-    sf::Color titleBoxColor = _titleBox.getFillColor();
-    titleBoxColor.a = static_cast<sf::Uint8>(200 + _titleGlowIntensity * 55);
-    _titleBox.setFillColor(titleBoxColor);
+    // Use base colors, not current colors
+    sf::Color titleBoxBaseColor(30, 30, 45, 200);
+    titleBoxBaseColor.a = static_cast<sf::Uint8>(200 + _titleGlowIntensity * 55);
+    _titleBox.setFillColor(titleBoxBaseColor);
 
-    sf::Color titleOutlineColor = _titleBox.getOutlineColor();
-    titleOutlineColor.a = static_cast<sf::Uint8>(150 + _titleGlowIntensity * 105);
-    _titleBox.setOutlineColor(titleOutlineColor);
+    sf::Color titleOutlineBaseColor(120, 180, 255, 150);
+    titleOutlineBaseColor.a = static_cast<sf::Uint8>(150 + _titleGlowIntensity * 105);
+    _titleBox.setOutlineColor(titleOutlineBaseColor);
 
     _window.draw(_titleBox);
 
@@ -399,9 +400,9 @@ void StoryGame::render() {
         float textHeight = _mainText.getLocalBounds().height + 50.0f;
         float textBoxHeight = std::max(350.0f, textHeight);
 
-        sf::Color boxColor = _textBox.getFillColor();
-        boxColor.a = 220;
-        _textBox.setFillColor(boxColor);
+        // Use base color, not current color (avoid color accumulation)
+        sf::Color boxBaseColor(15, 15, 25, 220);
+        _textBox.setFillColor(boxBaseColor);
         _textBox.setSize({1100, textBoxHeight});
         _textBox.setPosition(50.0f, yPos);
         _window.draw(_textBox);
@@ -474,30 +475,176 @@ void StoryGame::render() {
     }
 
     else if (_state == GameState::GameOver) {
-    _textBox.setSize(sf::Vector2f(1100, 500));
-    _textBox.setPosition(50.0f, yPos);
-    _textBox.setFillColor(sf::Color(40, 20, 20, 220));
-    _textBox.setOutlineColor(sf::Color(200, 50, 50, 200));
-    _textBox.setOutlineThickness(3.0f);
-    _window.draw(_textBox);
-
-    std::string gameOverText =
-        "                      Game Over\n\n"
-        "All your memories have faded away.\n\n"
-        "You stand in the center of the street,\n"
-        "not knowing who you are,\n"
-        "not knowing where to go.\n\n"
-        "But this street...\n"
-        "You remember it.\n\n"
-        "Steps: " + std::to_string(_steps) + "\n"
-        "Street Familiarity: " + std::to_string(_familiarity) + "%\n\n"
-        "Press ENTER or ESC to exit...\n";
-
-    _mainText.setString(gameOverText);
-    _mainText.setFillColor(sf::Color(220, 150, 150));
-    _mainText.setPosition(70.0f, yPos + 20.0f);
-    _window.draw(_mainText);
-}
+        // Create dramatic background effect
+        float gameOverPulse = (std::sin(_glowTimer.getElapsedTime().asSeconds() * 1.5f) + 1.0f) * 0.5f;
+        sf::Color gameOverBg(30, 10, 10);
+        gameOverBg.r = static_cast<sf::Uint8>(30 + gameOverPulse * 20);
+        gameOverBg.g = static_cast<sf::Uint8>(10 + gameOverPulse * 10);
+        gameOverBg.b = static_cast<sf::Uint8>(10 + gameOverPulse * 10);
+        _window.clear(gameOverBg);
+        _background.setFillColor(gameOverBg);
+        _window.draw(_background);
+        
+        // Draw particles (memory loss effect)
+        _particleSystem.draw(_window);
+        
+        // Main game over box with animated glow
+        float boxGlow = (std::sin(_glowTimer.getElapsedTime().asSeconds() * 2.0f) + 1.0f) * 0.5f;
+        sf::Color boxColor(50, 15, 15);
+        boxColor.a = static_cast<sf::Uint8>(220 + boxGlow * 35);
+        _textBox.setFillColor(boxColor);
+        
+        sf::Color outlineColor(220, 60, 60);
+        outlineColor.a = static_cast<sf::Uint8>(180 + boxGlow * 75);
+        _textBox.setOutlineColor(outlineColor);
+        _textBox.setOutlineThickness(4.0f + boxGlow * 2.0f);
+        _textBox.setSize(sf::Vector2f(1100, 600));
+        _textBox.setPosition(50.0f, 100.0f);
+        _window.draw(_textBox);
+        
+        float gameOverY = 120.0f;
+        
+        // Game Over Title with dramatic effect
+        float titlePulse = (std::sin(_glowTimer.getElapsedTime().asSeconds() * 3.0f) + 1.0f) * 0.5f;
+        sf::Text gameOverTitle;
+        gameOverTitle.setFont(_font);
+        gameOverTitle.setString(
+                               "                         GAME OVER\n"
+                               );
+        gameOverTitle.setCharacterSize(42);
+        gameOverTitle.setStyle(sf::Text::Bold);
+        sf::Color titleColor(255, 100, 100);
+        titleColor.r = static_cast<sf::Uint8>(200 + titlePulse * 55);
+        titleColor.g = static_cast<sf::Uint8>(80 + titlePulse * 20);
+        titleColor.b = static_cast<sf::Uint8>(80 + titlePulse * 20);
+        gameOverTitle.setFillColor(titleColor);
+        gameOverTitle.setPosition(70.0f, gameOverY);
+        _window.draw(gameOverTitle);
+        gameOverY += 120.0f;
+        
+        // Main narrative text with fade effect
+        std::string narrativeText = 
+            "All your memories have faded away...\n\n"
+            "You stand in the center of the street,\n"
+            "not knowing who you are,\n"
+            "not knowing where to go.\n\n"
+            "But this street...\n"
+            "You remember it.\n"
+            "You've been here before...\n";
+        
+        _mainText.setString(narrativeText);
+        _mainText.setCharacterSize(24);
+        sf::Color narrativeColor(240, 200, 200);
+        float narrativeGlow = 0.85f + (std::sin(_glowTimer.getElapsedTime().asSeconds() * 1.2f) + 1.0f) * 0.15f;
+        narrativeColor.r = static_cast<sf::Uint8>(narrativeColor.r * narrativeGlow);
+        narrativeColor.g = static_cast<sf::Uint8>(narrativeColor.g * narrativeGlow);
+        narrativeColor.b = static_cast<sf::Uint8>(narrativeColor.b * narrativeGlow);
+        _mainText.setFillColor(narrativeColor);
+        _mainText.setPosition(70.0f, gameOverY);
+        _window.draw(_mainText);
+        gameOverY += 220.0f;
+        
+        // Statistics box with glow
+        sf::RectangleShape statsBox;
+        statsBox.setSize(sf::Vector2f(1050, 120));
+        float statsGlow = (std::sin(_glowTimer.getElapsedTime().asSeconds() * 1.8f) + 1.0f) * 0.5f;
+        sf::Color statsBoxColor(40, 25, 25);
+        statsBoxColor.a = static_cast<sf::Uint8>(180 + statsGlow * 40);
+        statsBox.setFillColor(statsBoxColor);
+        sf::Color statsOutlineColor(150, 100, 100);
+        statsOutlineColor.a = static_cast<sf::Uint8>(120 + statsGlow * 60);
+        statsBox.setOutlineColor(statsOutlineColor);
+        statsBox.setOutlineThickness(2.0f);
+        statsBox.setPosition(70.0f, gameOverY);
+        _window.draw(statsBox);
+        
+        // Statistics text
+        std::string statsText = 
+            "                                        Final Statistics:\n"
+            "                                            Steps Taken: " + std::to_string(_steps) + "\n"
+            "                                            Street Familiarity: " + std::to_string(_familiarity) + "%\n"
+            "                                            Memories Lost: " + std::to_string(_lostMemories.size());
+        
+        sf::Text statsDisplay;
+        statsDisplay.setFont(_font);
+        statsDisplay.setString(statsText);
+        statsDisplay.setCharacterSize(22);
+        statsDisplay.setFillColor(sf::Color(255, 220, 180));
+        statsDisplay.setPosition(90.0f, gameOverY + 15.0f);
+        _window.draw(statsDisplay);
+        gameOverY += 140.0f;
+        
+        // Exit prompt with blinking effect
+        float blinkSpeed = 2.5f;
+        float blink = (std::sin(_glowTimer.getElapsedTime().asSeconds() * blinkSpeed) + 1.0f) * 0.5f;
+        sf::Text exitPrompt;
+        exitPrompt.setFont(_font);
+        exitPrompt.setString(">>> Press ENTER or ESC to exit <<<");
+        exitPrompt.setCharacterSize(20);
+        exitPrompt.setStyle(sf::Text::Bold);
+        sf::Color promptColor(255, 180, 120);
+        promptColor.a = static_cast<sf::Uint8>(150 + blink * 105);
+        exitPrompt.setFillColor(promptColor);
+        exitPrompt.setPosition(70.0f, gameOverY);
+        _window.draw(exitPrompt);
+        
+        // Add corner decorations (simple lines)
+        float cornerGlow = (std::sin(_glowTimer.getElapsedTime().asSeconds() * 1.0f) + 1.0f) * 0.5f;
+        sf::Color cornerColor(200, 80, 80);
+        cornerColor.a = static_cast<sf::Uint8>(100 + cornerGlow * 80);
+        
+        // Top-left corner
+        sf::RectangleShape corner1(sf::Vector2f(80.0f, 2.0f));
+        corner1.setFillColor(cornerColor);
+        corner1.setPosition(50.0f, 100.0f);
+        corner1.setRotation(0.0f);
+        _window.draw(corner1);
+        
+        sf::RectangleShape corner2(sf::Vector2f(80.0f, 2.0f));
+        corner2.setFillColor(cornerColor);
+        corner2.setPosition(50.0f, 100.0f);
+        corner2.setRotation(90.0f);
+        _window.draw(corner2);
+        
+        // Top-right corner
+        sf::RectangleShape corner3(sf::Vector2f(80.0f, 2.0f));
+        corner3.setFillColor(cornerColor);
+        corner3.setPosition(1150.0f, 100.0f);
+        corner3.setRotation(0.0f);
+        _window.draw(corner3);
+        
+        sf::RectangleShape corner4(sf::Vector2f(80.0f, 2.0f));
+        corner4.setFillColor(cornerColor);
+        corner4.setPosition(1150.0f, 100.0f);
+        corner4.setRotation(90.0f);
+        _window.draw(corner4);
+        
+        // Bottom-left corner
+        sf::RectangleShape corner5(sf::Vector2f(80.0f, 2.0f));
+        corner5.setFillColor(cornerColor);
+        corner5.setPosition(50.0f, 700.0f);
+        corner5.setRotation(0.0f);
+        _window.draw(corner5);
+        
+        sf::RectangleShape corner6(sf::Vector2f(80.0f, 2.0f));
+        corner6.setFillColor(cornerColor);
+        corner6.setPosition(50.0f, 700.0f);
+        corner6.setRotation(90.0f);
+        _window.draw(corner6);
+        
+        // Bottom-right corner
+        sf::RectangleShape corner7(sf::Vector2f(80.0f, 2.0f));
+        corner7.setFillColor(cornerColor);
+        corner7.setPosition(1150.0f, 700.0f);
+        corner7.setRotation(0.0f);
+        _window.draw(corner7);
+        
+        sf::RectangleShape corner8(sf::Vector2f(80.0f, 2.0f));
+        corner8.setFillColor(cornerColor);
+        corner8.setPosition(1150.0f, 700.0f);
+        corner8.setRotation(90.0f);
+        _window.draw(corner8);
+    }
 
     _window.display();
 }

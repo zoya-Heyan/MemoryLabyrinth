@@ -13,6 +13,7 @@ TextEffect::TextEffect()
     , _glowIntensity(1.0f)
     , _shakeIntensity(0.0f)
     , _shakeOffset(0.0f, 0.0f)
+    , _baseColor(255, 255, 255, 255)
 {
 }
 
@@ -39,6 +40,7 @@ void TextEffect::setCharacterSize(unsigned int size) {
 }
 
 void TextEffect::setFillColor(const sf::Color& color) {
+    _baseColor = color;  // Save base color
     _text.setFillColor(color);
 }
 
@@ -182,13 +184,15 @@ void TextEffect::updateFadeIn(float deltaTime) {
 
 void TextEffect::updateGlow(float deltaTime) {
     float glow = (std::sin(_timer * 3.0f) + 1.0f) * 0.5f; // 0 to 1
-    sf::Color color = _text.getFillColor();
     
-    // Create glow effect by varying brightness
+    // Use base color, not current color (avoid color accumulation)
     float brightness = 0.7f + glow * 0.3f * _glowIntensity;
-    color.r = std::min(255, static_cast<int>(color.r * brightness));
-    color.g = std::min(255, static_cast<int>(color.g * brightness));
-    color.b = std::min(255, static_cast<int>(color.b * brightness));
+    sf::Color color(
+        std::min(255, static_cast<int>(_baseColor.r * brightness)),
+        std::min(255, static_cast<int>(_baseColor.g * brightness)),
+        std::min(255, static_cast<int>(_baseColor.b * brightness)),
+        _baseColor.a
+    );
     
     _text.setFillColor(color);
 }

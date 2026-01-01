@@ -51,6 +51,7 @@ private:
     // Text properties
     sf::Text _text;
     sf::Font _font;
+    sf::Color _baseColor;  // Base color to avoid accumulation
     
     // Animation state
     float _timer;
