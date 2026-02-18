@@ -1,19 +1,5 @@
 #pragma once
 
-//直接将图片set丢进frame即可使用！
-/*
-e.g.
-std::vector<std::string> frames = {
-        "assets/walk1.png",
-        "assets/walk2.png",
-        "assets/walk3.png",
-        "assets/walk4.png"
-    };
-
-    Animation playerAnimation(frames, 0.2f); // 每帧 0.2 秒
-*/
-//参数：frames， 帧数
-
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
