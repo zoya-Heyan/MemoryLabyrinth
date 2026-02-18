@@ -8,34 +8,31 @@
 #include "ParticleSystem.hpp"
 #include "TextEffect.hpp"
 
-// 记忆片段
 struct Memory {
     std::string description;
-    int importance;  // 重要性，决定消失顺序
+    int importance; 
 };
 
-// 游戏状态
 enum class GameState {
-    WakingUp,      // 醒来
-    Exploring,     // 探索中
-    MemoryLoss,    // 记忆消失
-    GameOver,      // 游戏结束
-    Victory        // 胜利（如果实现）
+    WakingUp,      
+    Exploring,    
+    MemoryLoss,
+    GameOver,    
+    Victory      
 };
 
-// 选择项
 struct Choice {
     std::string text;
     std::string consequence;
-    int memoryCost;  // 消耗的记忆点数
+    int memoryCost; 
 };
 
-// 场景
+
 struct Scene {
     std::string description;
     std::vector<Choice> choices;
-    bool hasMemory;  // 是否触发记忆
-    bool memoryGained;  // 记忆是否已被获取
+    bool hasMemory;  
+    bool memoryGained;  
     Memory memory;
 };
 

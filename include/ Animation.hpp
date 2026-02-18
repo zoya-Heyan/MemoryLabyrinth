@@ -8,12 +8,12 @@ class Animation {
 public:
     Animation(const std::vector<std::string>& frameFiles, float frameTime);
 
-    void update();                       // 更新动画（根据时间切换帧）
-    void setPosition(float x, float y);  // 设置位置
-    void draw(sf::RenderWindow& window); // 绘制到窗口
+    void update();                       
+    void setPosition(float x, float y);  
+    void draw(sf::RenderWindow& window); 
 
 private:
-    std::vector<sf::Texture> m_textures; // 存放所有帧
+    std::vector<sf::Texture> m_textures; 
     sf::Sprite m_sprite;
     int m_currentFrame;
     float m_frameTime;
